@@ -39,7 +39,31 @@ const gameBoard = (function () {
     board[space].changeMarker(marker);
   };
 
-  const checkForWinner = () => {};
+  const checkForWinner = () => {
+    const WINNING_COMBOS = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    let gameOver = false;
+
+    WINNING_COMBOS.forEach((combo) => {
+      const markerOne = board[combo[0]].getMarker();
+      const markerTwo = board[combo[1]].getMarker();
+      const markerThree = board[combo[2]].getMarker();
+
+      if (markerOne && markerOne == markerTwo && markerOne == markerThree) {
+        gameOver = true;
+      }
+    });
+
+    return gameOver;
+  };
 
   const clear = (board) => {
     board.forEach((cell) => {
@@ -47,7 +71,7 @@ const gameBoard = (function () {
     });
   };
 
-  return { checkForMarker, acceptMarker, clear };
+  return { checkForMarker, acceptMarker, checkForWinner, clear };
 })();
 
 const gameController = (function () {
@@ -70,7 +94,7 @@ const gameController = (function () {
       activePlayer = activePlayer === playerOne ? playerTwo : playerOne;
     }
     console.log(
-      `Active Player has switched to: ${activePlayer.getName()} ${activePlayer.getMarker()}`
+      `Active Player has switched to: ${activePlayer.getName()} (${activePlayer.getMarker()})`
     );
   };
 
@@ -78,11 +102,16 @@ const gameController = (function () {
     cell.addEventListener("click", () => {
       const cellNumber = cell.dataset.cell;
       const activeMarker = activePlayer.getMarker();
+      console.log(gameOver)
 
       if (gameBoard.checkForMarker(cellNumber) || gameOver) return;
 
       gameBoard.acceptMarker(cellNumber, activeMarker);
-      displayController.drawMarker(cell, activePlayer)
+      displayController.drawMarker(cell, activePlayer);
+
+      gameOver = gameBoard.checkForWinner();
+      console.log(`Game is over: ${gameOver}`)
+
       changeActivePlayer();
     });
   });
@@ -91,12 +120,11 @@ const gameController = (function () {
 })();
 
 const displayController = (function () {
-
   const drawMarker = (cell, activePlayer) => {
     const marker = activePlayer.getMarker();
     const color = activePlayer.getColor();
 
-    cell.classList.add(`${marker}-${color}`)
+    cell.classList.add(`${marker}-${color}`);
   };
 
   return { drawMarker };
