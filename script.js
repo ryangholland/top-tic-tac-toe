@@ -11,7 +11,16 @@ const createCell = function (space) {
   return { getSpace, getMarker, changeMarker };
 };
 
-const createPlayer = function () {};
+const createPlayer = function (name, marker) {
+  const getName = () => name;
+  const getMarker = () => marker;
+
+  const changeMarker = () => {
+    marker = marker === "X" ? "O" : "X";
+  };
+
+  return { getName, getMarker, changeMarker };
+};
 
 const gameBoard = (function () {
   const board = [];
@@ -21,9 +30,17 @@ const gameBoard = (function () {
     board.push(newCell);
   }
 
+  const checkForMarker = (space) => {
+    return board[space].getMarker();
+  };
+
   const acceptMarker = (space, marker) => {
     board[space].changeMarker(marker);
   };
+
+  const checkForWinner = () => {
+    
+  }
 
   const clear = (board) => {
     board.forEach((cell) => {
@@ -31,14 +48,47 @@ const gameBoard = (function () {
     });
   };
 
-  return { board, acceptMarker, clear };
+  return { checkForMarker, acceptMarker, clear };
 })();
 
-const gameController = (function () {})();
+const gameController = (function () {
+  const cells = document.querySelectorAll("[data-cell]");
+  let activePlayer,
+    playerOne,
+    playerTwo = null;
+
+  const initiateGame = () => {
+    playerOne = createPlayer("Player One", "X");
+    playerTwo = createPlayer("Player Two", "O");
+    changeActivePlayer();
+  };
+
+  const changeActivePlayer = () => {
+    if (!activePlayer) {
+      activePlayer = playerOne;
+    } else {
+      activePlayer = activePlayer === playerOne ? playerTwo : playerOne;
+    }
+    console.log(
+      `Active Player has switched to: ${activePlayer.getName()} ${activePlayer.getMarker()}`
+    );
+  };
+
+  cells.forEach((cell) => {
+    cell.addEventListener("click", () => {
+      const cellNumber = cell.dataset.cell;
+      const activeMarker = activePlayer.getMarker();
+
+      if (gameBoard.checkForMarker(cellNumber)) return;
+
+      gameBoard.acceptMarker(cellNumber, activeMarker);
+      changeActivePlayer();
+    });
+  });
+
+  return { initiateGame };
+})();
 
 const displayController = (function () {})();
 
-gameBoard.acceptMarker(0, "X");
-gameBoard.acceptMarker(1, "O");
-console.log(gameBoard.board[0].getMarker());
-console.log(gameBoard.board[1].getMarker());
+gameController.initiateGame();
