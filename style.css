@@ -100,32 +100,22 @@ main {
   place-items: center;
 }
 
-.x-bg {
-  background-image: url(./images/x.svg);
-  background-size: cover;
-}
-
-.o-bg {
-  background-image: url(./images/o.svg);
-  background-size: cover;
-}
-
-.x-or {
+.X-orange {
   background-image: url(./images/x-orange.svg);
   background-size: cover;
 }
 
-.o-or {
+.O-orange {
   background-image: url(./images/o-orange.svg);
   background-size: cover;
 }
 
-.x-bl {
+.X-blue {
   background-image: url(./images/x-blue.svg);
   background-size: cover;
 }
 
-.o-bl {
+.O-blue {
   background-image: url(./images/o-blue.svg);
   background-size: cover;
 }

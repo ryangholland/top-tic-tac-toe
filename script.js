@@ -11,15 +11,16 @@ const createCell = function (space) {
   return { getSpace, getMarker, changeMarker };
 };
 
-const createPlayer = function (name, marker) {
+const createPlayer = function (name, marker, color) {
   const getName = () => name;
   const getMarker = () => marker;
+  const getColor = () => color;
 
   const changeMarker = () => {
     marker = marker === "X" ? "O" : "X";
   };
 
-  return { getName, getMarker, changeMarker };
+  return { getName, getMarker, getColor, changeMarker };
 };
 
 const gameBoard = (function () {
@@ -38,9 +39,7 @@ const gameBoard = (function () {
     board[space].changeMarker(marker);
   };
 
-  const checkForWinner = () => {
-    
-  }
+  const checkForWinner = () => {};
 
   const clear = (board) => {
     board.forEach((cell) => {
@@ -56,10 +55,11 @@ const gameController = (function () {
   let activePlayer,
     playerOne,
     playerTwo = null;
+  let gameOver = false;
 
   const initiateGame = () => {
-    playerOne = createPlayer("Player One", "X");
-    playerTwo = createPlayer("Player Two", "O");
+    playerOne = createPlayer("Player One", "X", "blue");
+    playerTwo = createPlayer("Player Two", "O", "orange");
     changeActivePlayer();
   };
 
@@ -79,9 +79,10 @@ const gameController = (function () {
       const cellNumber = cell.dataset.cell;
       const activeMarker = activePlayer.getMarker();
 
-      if (gameBoard.checkForMarker(cellNumber)) return;
+      if (gameBoard.checkForMarker(cellNumber) || gameOver) return;
 
       gameBoard.acceptMarker(cellNumber, activeMarker);
+      displayController.drawMarker(cell, activePlayer)
       changeActivePlayer();
     });
   });
@@ -89,6 +90,16 @@ const gameController = (function () {
   return { initiateGame };
 })();
 
-const displayController = (function () {})();
+const displayController = (function () {
+
+  const drawMarker = (cell, activePlayer) => {
+    const marker = activePlayer.getMarker();
+    const color = activePlayer.getColor();
+
+    cell.classList.add(`${marker}-${color}`)
+  };
+
+  return { drawMarker };
+})();
 
 gameController.initiateGame();
