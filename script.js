@@ -65,13 +65,23 @@ const gameBoard = (function () {
     return gameOver;
   };
 
+  const checkForTie = () => {
+    let gameOver = false;
+    const emptySpaces = board.filter((cell) => !cell.getMarker());
+    if (emptySpaces.length == 0) {
+      gameOver = true;
+      console.log("is a tie");
+    }
+    return gameOver;
+  };
+
   const clear = (board) => {
     board.forEach((cell) => {
       cell.changeMarker("");
     });
   };
 
-  return { checkForMarker, acceptMarker, checkForWinner, clear };
+  return { checkForMarker, acceptMarker, checkForWinner, checkForTie, clear };
 })();
 
 const gameController = (function () {
@@ -102,7 +112,7 @@ const gameController = (function () {
     cell.addEventListener("click", () => {
       const cellNumber = cell.dataset.cell;
       const activeMarker = activePlayer.getMarker();
-      console.log(gameOver)
+      console.log(gameOver);
 
       if (gameBoard.checkForMarker(cellNumber) || gameOver) return;
 
@@ -110,8 +120,9 @@ const gameController = (function () {
       displayController.drawMarker(cell, activePlayer);
 
       gameOver = gameBoard.checkForWinner();
-      console.log(`Game is over: ${gameOver}`)
-
+      if (!gameOver) {
+        gameOver = gameBoard.checkForTie();
+      }
       changeActivePlayer();
     });
   });
