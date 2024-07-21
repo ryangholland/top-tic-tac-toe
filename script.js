@@ -121,9 +121,19 @@ const gameController = (function () {
       displayController.drawMarker(cell, activePlayer);
 
       gameOver = gameBoard.checkForWinner();
+      if (gameOver) {
+        displayController.displayWinner(activePlayer);
+        return;
+      }
+
       if (!gameOver) {
         gameOver = gameBoard.checkForTie();
+        if (gameOver) {
+          displayController.displayTie();
+          return;
+        }
       }
+
       changeActivePlayer();
     });
   });
@@ -132,6 +142,12 @@ const gameController = (function () {
 })();
 
 const displayController = (function () {
+  const BLUE = "#0000F5";
+  const ORANGE = "#EA3323";
+  const gameInfo = document.querySelector(".game-info");
+  const playerName = document.querySelector(".player-name");
+  const playerMarker = document.querySelector(".player-marker");
+
   const drawMarker = (cell, activePlayer) => {
     const marker = activePlayer.getMarker();
     const color = activePlayer.getColor();
@@ -140,13 +156,6 @@ const displayController = (function () {
   };
 
   const renderGameInfo = (player) => {
-    const BLUE = "#0000F5";
-    const ORANGE = "#EA3323";
-
-    const gameInfo = document.querySelector(".game-info");
-    const playerName = document.querySelector(".player-name");
-    const playerMarker = document.querySelector(".player-marker");
-
     const activeName = player.getName();
     const activeColor = player.getColor();
     const activeMarker = player.getMarker();
@@ -156,7 +165,20 @@ const displayController = (function () {
     playerMarker.textContent = activeMarker;
   };
 
-  return { drawMarker, renderGameInfo };
+  const displayWinner = (player) => {
+    const activeName = player.getName();
+    const activeColor = player.getColor();
+
+    gameInfo.style.color = activeColor === "blue" ? BLUE : ORANGE;
+    gameInfo.textContent = `Game over! ${activeName} wins!`;
+  };
+
+  const displayTie = () => {
+    gameInfo.style.color = "black";
+    gameInfo.textContent = `Game over! It's a tie!`;
+  };
+
+  return { drawMarker, renderGameInfo, displayWinner, displayTie };
 })();
 
 gameController.initiateGame();
