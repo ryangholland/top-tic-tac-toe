@@ -106,6 +106,7 @@ const gameController = (function () {
     console.log(
       `Active Player has switched to: ${activePlayer.getName()} (${activePlayer.getMarker()})`
     );
+    displayController.renderGameInfo(activePlayer);
   };
 
   cells.forEach((cell) => {
@@ -138,7 +139,24 @@ const displayController = (function () {
     cell.classList.add(`${marker}-${color}`);
   };
 
-  return { drawMarker };
+  const renderGameInfo = (player) => {
+    const BLUE = "#0000F5";
+    const ORANGE = "#EA3323";
+
+    const gameInfo = document.querySelector(".game-info");
+    const playerName = document.querySelector(".player-name");
+    const playerMarker = document.querySelector(".player-marker");
+
+    const activeName = player.getName();
+    const activeColor = player.getColor();
+    const activeMarker = player.getMarker();
+
+    gameInfo.style.color = activeColor === "blue" ? BLUE : ORANGE;
+    playerName.textContent = activeName;
+    playerMarker.textContent = activeMarker;
+  };
+
+  return { drawMarker, renderGameInfo };
 })();
 
 gameController.initiateGame();

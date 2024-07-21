@@ -81,6 +81,10 @@ main {
 
 /* Main */
 
+main h2 {
+  text-align: center;
+}
+
 .ttt-grid {
   margin: auto;
   max-width: 600px;
@@ -118,4 +122,16 @@ main {
 .O-blue {
   background-image: url(./images/o-blue.svg);
   background-size: cover;
+}
+
+.restart-btn {
+  margin: auto;
+  display: block;
+  padding: 0.25rem 1rem;
+  border-radius: 10px;
+}
+
+.restart-btn:hover {
+  cursor: pointer;
+  opacity: 0.8;
 }
