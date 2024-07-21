@@ -75,7 +75,7 @@ const gameBoard = (function () {
     return gameOver;
   };
 
-  const clear = (board) => {
+  const clear = () => {
     board.forEach((cell) => {
       cell.changeMarker("");
     });
@@ -86,6 +86,7 @@ const gameBoard = (function () {
 
 const gameController = (function () {
   const cells = document.querySelectorAll("[data-cell]");
+  const restartButton = document.querySelector(".restart-btn");
   let activePlayer,
     playerOne,
     playerTwo = null;
@@ -138,6 +139,17 @@ const gameController = (function () {
     });
   });
 
+  restartButton.addEventListener("click", () => {
+    displayController.resetGameInfo();
+    cells.forEach((cell) => {
+      cell.className = "";
+      cell.classList.add("ttt-cell");
+    });
+    gameOver = false;
+    gameBoard.clear();
+    initiateGame();
+  });
+
   return { initiateGame };
 })();
 
@@ -145,6 +157,7 @@ const displayController = (function () {
   const BLUE = "#0000F5";
   const ORANGE = "#EA3323";
   const gameInfo = document.querySelector(".game-info");
+  const resultInfo = document.querySelector(".result-info");
   const playerName = document.querySelector(".player-name");
   const playerMarker = document.querySelector(".player-marker");
 
@@ -169,16 +182,33 @@ const displayController = (function () {
     const activeName = player.getName();
     const activeColor = player.getColor();
 
-    gameInfo.style.color = activeColor === "blue" ? BLUE : ORANGE;
-    gameInfo.textContent = `Game over! ${activeName} wins!`;
+    gameInfo.style.display = "none";
+    resultInfo.style.display = "block";
+
+    resultInfo.style.color = activeColor === "blue" ? BLUE : ORANGE;
+    resultInfo.textContent = `Game over! ${activeName} wins!`;
   };
 
   const displayTie = () => {
-    gameInfo.style.color = "black";
-    gameInfo.textContent = `Game over! It's a tie!`;
+    gameInfo.style.display = "none";
+    resultInfo.style.display = "block";
+
+    resultInfo.style.color = "black";
+    resultInfo.textContent = `Game over! It's a tie!`;
   };
 
-  return { drawMarker, renderGameInfo, displayWinner, displayTie };
+  const resetGameInfo = () => {
+    gameInfo.style.display = "block";
+    resultInfo.style.display = "none";
+  };
+
+  return {
+    drawMarker,
+    renderGameInfo,
+    displayWinner,
+    displayTie,
+    resetGameInfo,
+  };
 })();
 
 gameController.initiateGame();
